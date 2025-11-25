@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { Public } from '../auth/decorators/public.decorator';
 
 interface Country {
   code: string;
@@ -7,6 +8,7 @@ interface Country {
 
 @Controller('countries')
 export class CountriesController {
+  @Public()
   @Get()
   findAll(): Country[] {
     // Lista simple de ejemplo; puedes ampliarla según tus necesidades

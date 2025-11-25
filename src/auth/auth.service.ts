@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Collection } from 'mongodb';
 import { USERS_COLLECTION } from '../database/database.module';
 import { LoginDto } from './dto/login.dto';
@@ -23,9 +24,10 @@ export class AuthService {
   constructor(
     @Inject(USERS_COLLECTION)
     private readonly usersCollection: Collection<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async login(dto: LoginDto): Promise<User> {
+  async login(dto: LoginDto): Promise<{ user: Omit<User, 'password'>; access_token: string }> {
     const user = await this.usersCollection.findOne({
       email: dto.email,
       password: dto.password,
@@ -37,10 +39,24 @@ export class AuthService {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...safeUser } = user;
-    return safeUser as User;
+    
+    const payload = {
+      sub: user._id?.toString(),
+      email: user.email,
+    };
+
+    const access_token = this.jwtService.sign(payload);
+
+    return {
+      user: {
+        ...safeUser,
+        _id: user._id?.toString(),
+      },
+      access_token,
+    };
   }
 
-  async register(dto: RegisterDto): Promise<User> {
+  async register(dto: RegisterDto): Promise<{ user: Omit<User, 'password'>; access_token: string }> {
     const existing = await this.usersCollection.findOne({
       email: dto.email,
     });
@@ -67,7 +83,21 @@ export class AuthService {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...safeUser } = created;
-    return safeUser as User;
+
+    const payload = {
+      sub: created._id?.toString(),
+      email: created.email,
+    };
+
+    const access_token = this.jwtService.sign(payload);
+
+    return {
+      user: {
+        ...safeUser,
+        _id: created._id?.toString(),
+      },
+      access_token,
+    };
   }
 }
 

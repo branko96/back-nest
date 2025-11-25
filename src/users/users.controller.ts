@@ -22,6 +22,17 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('locations')
+  getLocations() {
+    return [
+      { name: 'Buenos Aires', lat: -34.6037, lng: -58.3816 },
+      { name: 'Córdoba', lat: -31.4201, lng: -64.1888 },
+      { name: 'Rosario', lat: -32.9442, lng: -60.6505 },
+      { name: 'Mendoza', lat: -32.8895, lng: -68.8458 },
+      { name: 'La Plata', lat: -34.9215, lng: -57.9545 },
+    ];
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
