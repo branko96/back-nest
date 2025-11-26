@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import { USERS_COLLECTION } from '../../database/database.module';
 import { User } from '../auth.service';
 
@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: { sub: string; email: string }) {
     const user = await this.usersCollection.findOne({
-      _id: payload.sub as any,
+      _id: new ObjectId(payload.sub) as any,
     });
 
     if (!user) {
