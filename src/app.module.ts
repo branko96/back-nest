@@ -5,9 +5,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { DatabaseModule } from './database/database.module';
 import { CountriesModule } from './countries/countries.module';
 import { UsersModule } from './users/users.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, CountriesModule, UsersModule],
+  imports: [DatabaseModule, AuthModule, CountriesModule, UsersModule, NotificationsModule],
   providers: [
     {
       provide: APP_GUARD,

@@ -4,6 +4,7 @@ import { MongoClient, Db, Collection } from 'mongodb';
 export const MONGO_CLIENT = 'MONGO_CLIENT';
 export const MONGO_DB = 'MONGO_DB';
 export const USERS_COLLECTION = 'USERS_COLLECTION';
+export const NOTIFICATIONS_COLLECTION = 'NOTIFICATIONS_COLLECTION';
 
 @Module({
   providers: [
@@ -29,8 +30,13 @@ export const USERS_COLLECTION = 'USERS_COLLECTION';
       useFactory: (db: Db): Collection => db.collection('users'),
       inject: [MONGO_DB],
     },
+    {
+      provide: NOTIFICATIONS_COLLECTION,
+      useFactory: (db: Db): Collection => db.collection('notifications'),
+      inject: [MONGO_DB],
+    },
   ],
-  exports: [MONGO_CLIENT, MONGO_DB, USERS_COLLECTION],
+  exports: [MONGO_CLIENT, MONGO_DB, USERS_COLLECTION, NOTIFICATIONS_COLLECTION],
 })
 export class DatabaseModule {}
 
